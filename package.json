@@ -1,0 +1,35 @@
+{
+  "name": "electron-webpack-quick-start",
+  "version": "0.0.0",
+  "license": "MIT",
+  "scripts": {
+    "dev": "electron-webpack dev",
+    "compile": "electron-webpack",
+    "dist": "yarn compile && electron-builder",
+    "dist:dir": "yarn dist --dir -c.compression=store -c.mac.identity=null"
+  },
+  "dependencies": {
+    "@emotion/core": "^10.0.6",
+    "@emotion/styled": "^10.0.6",
+    "@kennethormandy/react-fittext": "^0.6.0",
+    "chart.js": "^2.7.3",
+    "fs-jetpack": "^2.2.1",
+    "knex": "^0.16.3",
+    "react-chartjs-2": "^2.7.4",
+    "react-dropzone": "^8.0.4",
+    "source-map-support": "^0.5.10",
+    "sqlite3": "^4.0.6",
+    "react": "16.8.0-alpha.1",
+    "react-dom": "16.8.0-alpha.1"
+  },
+  "devDependencies": {
+    "@types/react": "^16.7.22",
+    "@types/react-dom": "^16.0.11",
+    "electron": "4.0.1",
+    "electron-builder": "20.38.4",
+    "electron-webpack": "^2.6.2",
+    "electron-webpack-ts": "^3.1.1",
+    "typescript": "^3.2.4",
+    "webpack": "4.28.4"
+  }
+}
