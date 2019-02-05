@@ -1,17 +1,19 @@
 import React from 'react';
 import { Line } from 'react-chartjs-2';
+import { format } from 'date-fns';
 import { StandardView } from './StandardView';
 import { useAnalyser } from '../hooks/useAnalyser';
 import {
-  totalSentMessages,
-  percentOfMessagesSelf,
-  biggestChats,
-  selfMessagesByMonth,
-  selfTrendByMonth,
+  analyseTotalSentMessages,
+  analysePercentOfMessagesSelf,
+  analyseBiggestChats,
+  analyseSelfMessagesByMonth,
+  analyseSelfTrendsByMonth,
 } from '../../../lib/analysers/analysers';
 import { StatBox } from './StatBox';
 import styled from '@emotion/styled';
 import { bigNumber } from '../../../lib/valueFormatters';
+import { SeriesLineGraph } from './SeriesLineGraph';
 
 interface OverviewProps {}
 
@@ -24,12 +26,13 @@ const StatsGrid = styled.ul({
 });
 
 export const Overview = (props: OverviewProps) => {
-  const totalSent = useAnalyser(totalSentMessages);
-  const percentageSelf = useAnalyser(percentOfMessagesSelf);
-  const chatsBySize = useAnalyser(biggestChats);
-  const selfMessages = useAnalyser(selfMessagesByMonth);
-  const xoxo = useAnalyser(selfTrendByMonth('xoxo'));
-  const babe = useAnalyser(selfTrendByMonth('babe'));
+  const totalSent = useAnalyser(analyseTotalSentMessages);
+  const percentageSelf = useAnalyser(analysePercentOfMessagesSelf);
+  const chatsBySize = useAnalyser(analyseBiggestChats);
+  const selfMessages = useAnalyser(analyseSelfMessagesByMonth);
+  const series = useAnalyser(
+    analyseSelfTrendsByMonth({ normalise: true }, 'wow', 'cool', 'sick'),
+  );
 
   return (
     <StandardView>
@@ -52,55 +55,10 @@ export const Overview = (props: OverviewProps) => {
         />
       </StatsGrid>
 
-      {xoxo.data === null || babe.data === null ? null : (
-        <Line
-          data={{
-            labels: babe.data.map((m) => m.my),
-            datasets: [
-              {
-                label: 'xoxo',
-                fill: false,
-                lineTension: 0.1,
-                backgroundColor: 'rgba(75,192,192,0.4)',
-                borderColor: '#EE79BD',
-                borderCapStyle: 'butt',
-                borderDash: [],
-                borderDashOffset: 0.0,
-                borderJoinStyle: 'miter',
-                pointBorderColor: 'rgba(75,192,192,1)',
-                pointBackgroundColor: '#fff',
-                pointBorderWidth: 1,
-                pointHoverRadius: 5,
-                pointHoverBackgroundColor: 'rgba(75,192,192,1)',
-                pointHoverBorderColor: 'rgba(220,220,220,1)',
-                pointHoverBorderWidth: 2,
-                pointRadius: 1,
-                pointHitRadius: 10,
-                data: xoxo.data.map((m) => m.total),
-              },
-              {
-                label: 'babe',
-                fill: false,
-                lineTension: 0.1,
-                backgroundColor: 'rgba(75,192,192,0.4)',
-                borderColor: '#EE110C',
-                borderCapStyle: 'butt',
-                borderDash: [],
-                borderDashOffset: 0.0,
-                borderJoinStyle: 'miter',
-                pointBorderColor: 'rgba(75,192,192,1)',
-                pointBackgroundColor: '#fff',
-                pointBorderWidth: 1,
-                pointHoverRadius: 5,
-                pointHoverBackgroundColor: 'rgba(75,192,192,1)',
-                pointHoverBorderColor: 'rgba(220,220,220,1)',
-                pointHoverBorderWidth: 2,
-                pointRadius: 1,
-                pointHitRadius: 10,
-                data: babe.data.map((m) => m.total),
-              },
-            ],
-          }}
+      {series.data === null ? null : (
+        <SeriesLineGraph
+          series={series.data}
+          xFormatter={(x) => format(x.week, 'MM/yy')}
         />
       )}
 
